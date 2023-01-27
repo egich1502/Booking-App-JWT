@@ -43,4 +43,8 @@ public class User {
   @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
   @JsonIgnoreProperties("user")
   private Set<Booking> bookings = new HashSet<>();
+
+  public User(String login) {
+    this.login = login;
+  }
 }
