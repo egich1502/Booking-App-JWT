@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width"/>
+  <title>Title</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        rel="stylesheet">
+</head>
+<body>
+<a class="ui-button" href="/login">Log In</a>
+<h2>Список столов</h2>
+
+<table class="table table-condensed table-striped table-bordered">
+  <thead>
+  <tr>
+    <th>Название</th>
+  </tr>
+  </thead>
+  <tbody>
+
+  </tbody>
+</table>
+
+<script>
+  async function GetTables() {
+    const response = await fetch("/api/tables", {
+      method: "GET",
+      headers: {"Accept": "application/json"}
+    });
+    if (response.ok === true) {
+      const tables = await response.json();
+      let rows = document.querySelector("tbody");
+      tables.forEach(table => {
+        rows.append(row(table));
+      });
+    }
+  }
+
+  function row(table) {
+    const tr = document.createElement("tr");
+    tr.setAttribute("data-rowid", table.id);
+
+    const idTd = document.createElement("td");
+    idTd.append(table.id);
+    tr.append(idTd);
+
+    const nameTd = document.createElement("td");
+    nameTd.append(table.name);
+    tr.append(nameTd);
+
+    const linksTd = document.createElement("a");
+
+    const editLink = document.createElement("a");
+    editLink.setAttribute("data-id", table.id);
+    editLink.setAttribute("style", "cursor:pointer;padding:15px;");
+    editLink.setAttribute("href", "/tables/" + table.id + "/booking");
+    editLink.append("Добавить бронирование");
+
+    linksTd.append(editLink);
+
+    tr.appendChild(linksTd);
+    return tr;
+  }
+
+  GetTables();
+</script>
+
+</body>
+</html>

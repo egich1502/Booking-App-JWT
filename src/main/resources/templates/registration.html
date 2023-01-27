@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<form id="registrationForm">
+  <div><label> User Name : <input type="text" id="username" class="form-control"/> </label></div>
+  <div><label> Login : <input type="text" id="login" class="form-control"/> </label></div>
+  <div><label> Password: <input type="password" id="password" class="form-control"/> </label></div>
+  <div><label> Phone number: <input type="tel" id="phone" class="form-control"/></label></div>
+  <div><input type="submit" value="Зарегистрироваться"/></div>
+</form>
+
+<script>
+  async function Register(username, login, password, phoneNumber) {
+    const response = await fetch('/api/auth/register', {
+      method: "POST",
+      headers: {"Accept": "application/json", "Content-Type": "application/json"},
+      body: JSON.stringify({
+        username: username,
+        login: login,
+        password: password,
+        phoneNumber: phoneNumber
+      })
+    });
+    if (response.ok === true) {
+      let abc = await response.json();
+      for (let abcKey in abc) {
+        window.localStorage.setItem(abcKey, abc[abcKey]);
+      }
+      window.location.replace('/');
+    } else {
+      alert('Такой пользователь уже существует');
+    }
+  }
+
+  document.forms["registrationForm"].addEventListener("submit", e => {
+    e.preventDefault();
+    const form = document.getElementById("registrationForm");
+    const username = form.elements["username"].value;
+    const login = form.elements["login"].value;
+    const password = form.elements["password"].value;
+    const phoneNumber = form.elements["phone"].value;
+    Register(username, login, password, phoneNumber);
+  })
+</script>
+</body>
+</html>
