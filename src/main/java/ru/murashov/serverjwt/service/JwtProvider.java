@@ -35,7 +35,7 @@ public class JwtProvider {
 
   public String generateAccessToken(@NonNull User user) {
     final LocalDateTime now = LocalDateTime.now();
-    final Instant accessExpirationInstant = now.plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant();
+    final Instant accessExpirationInstant = now.plusMinutes(15).atZone(ZoneId.systemDefault()).toInstant();
     final Date accessExpiration = Date.from(accessExpirationInstant);
     return Jwts.builder()
         .setSubject(user.getLogin())
@@ -43,6 +43,7 @@ public class JwtProvider {
         .signWith(jwtAccessSecret)
         .claim("roles", user.getRoles())
         .claim("username", user.getUsername())
+        .claim("login" ,user.getLogin())
         .compact();
   }
 

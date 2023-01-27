@@ -7,7 +7,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.murashov.serverjwt.filter.JwtFilter;
 
 @Configuration
@@ -26,11 +29,19 @@ public class SecurityConfig {
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests(
-            a -> a.antMatchers("/api/auth/login", "/api/auth/token").permitAll()
+            a -> a.antMatchers("/api/auth/login", "/api/auth/token", "/api/auth/register", "/login",
+                    "/registration", "/",
+                    "/api/tables", "/api/tables/{tableId}/booking", "/tables/{tableId}/booking")
+                .permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(jwtFilter)
+                .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         ).build();
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
   }
 
 }
